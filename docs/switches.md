@@ -29,3 +29,11 @@ the rules. Keys from before this rule are on its wanted list; a screenshot for o
 | `settings_key_panel` | <img src="quick-settings-panel.jpg" width="320" alt="settings_key_panel on a TV"> |
 | `home_idle_clock_minutes` | <img src="clock-screensaver.png" width="320" alt="home_idle_clock_minutes on a TV"> |
 | `gamepad_passthrough` | <img src="switches/gamepad_passthrough.jpg" width="320" alt="gamepad_passthrough on a TV"> |
+| `now_playing` | <img src="plus/now-playing.jpg" width="320" alt="now_playing on a TV"> |
+| `weather_latitude` | <img src="plus/weather.jpg" width="320" alt="weather_latitude on a TV"> |
+| `weather_longitude` | <img src="plus/weather.jpg" width="320" alt="weather_longitude on a TV"> |
+| `weather_city` | <img src="plus/weather.jpg" width="320" alt="weather_city on a TV"> |
+| `focused_name_only` | <img src="plus/focused-name.jpg" width="320" alt="focused_name_only on a TV"> |
+| `fade_rows_length` | <img src="plus/fade-rows.jpg" width="320" alt="fade_rows_length on a TV"> |
+| `fade_rows_bottom` | <img src="plus/weather.jpg" width="320" alt="fade_rows_bottom on a TV"> |
+| `app_spotlight` | <img src="plus/spotlight.jpg" width="320" alt="app_spotlight on a TV"> |

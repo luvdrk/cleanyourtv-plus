@@ -183,6 +183,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private List<RaceWeekend.Race> raceCalendar;
     private View racePanel;
     private TextView raceKicker, raceHeadline, raceSessions;
+    /** The now playing card (now_playing); null while it is off. */
+    private NowPlaying nowPlaying;
+    /** The app spotlight in the shelf (app_spotlight); null while it is off. */
+    private Spotlight spotlight;
+    /** The weather card in the shelf (weather_latitude/longitude); null while it is off. */
+    private Weather weather;
     /** config.xml show_stats, overridable by a theme. Off: the line is gone and nothing is read. */
     private boolean showStats;
     private boolean shamsi;
@@ -442,6 +448,22 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         raceKicker = findViewById(R.id.raceKicker);
         raceHeadline = findViewById(R.id.raceHeadline);
         raceSessions = findViewById(R.id.raceSessions);
+        if (cfg.appSpotlight) spotlight = new Spotlight(findViewById(R.id.appSpotlight), density, animations && !reducedMotion);
+        if (!Double.isNaN(cfg.weatherLatitude) && !Double.isNaN(cfg.weatherLongitude)) {
+            weather = new Weather(this, findViewById(R.id.weather), cfg.weatherLatitude, cfg.weatherLongitude, cfg.weatherCity);
+        }
+        if (cfg.nowPlaying) {
+            nowPlaying = new NowPlaying(this, findViewById(R.id.nowPlaying));
+            nowPlaying.setOnLeave(() -> focusTile(lastFocused));
+            nowPlaying.ignore(cfg.liveTvPackage);
+            // The card takes the shelf's place: the focused app's name (and its line under it) waits behind it.
+            boolean dockTitle = cfg.dockTitle;
+            nowPlaying.setOnShown(shown -> {
+                if (dockTitle) hero.setVisibility(shown ? View.INVISIBLE : View.VISIBLE);
+                if (spotlight != null) spotlight.setBlocked(shown);
+                if (weather != null) weather.setBlocked(shown);
+            });
+        }
         showStats = cfg.showStats;
         shamsi = cfg.shamsiDate;
         greetingName = cfg.greetingName;
@@ -512,7 +534,10 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
             }
         });
         if (dockRow) grid.addItemDecoration(new DockDecoration(COLUMNS, density, cinematic, cfg.alwaysShowNames, cfg.dockOpacity, cfg.dockGlass, cfg.dockEvenPadding));
-        if (cfg.fadeRows) TopFade.attach(grid, 48 * density);
+        if (cfg.fadeRows || cfg.fadeRowsBottom > 0) {
+            TopFade.attach(grid, cfg.fadeRows ? cfg.fadeRowsLength * density : 0f, cfg.fadeRowsBottom * density,
+                    dockRow ? COLUMNS : 0, 10 * density);
+        }
         // Reduced motion: the tiles are simply there, with no entrance (reloadApps skips it there too).
         if (animations && !reducedMotion) {
             grid.setLayoutAnimation(new LayoutAnimationController(
@@ -842,6 +867,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         if (openLiveTvAfterBoot()) return;
         updateGreeting();
         updateRace();
+        if (nowPlaying != null) nowPlaying.start();
+        if (weather != null) weather.start();
         // The network and Inputs pills keep their state while Home is in the background, and callbacks update them
         // when the network or the inputs change, so this refresh only catches anything missed. Its binder calls
         // (about 7 ms on a TCL C755, most of it WifiManager.getConnectionInfo) would hold up the first frame back
@@ -1031,6 +1058,8 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         heroArt.animate().cancel();
         handler.removeCallbacks(minuteTick);
         stopStats();
+        if (nowPlaying != null) nowPlaying.stop();
+        if (weather != null) weather.stop();
         if (diya != null) diya.stop();
         cancelPendingFocusScroll();
         // Nothing of ours stays on screen over another app; an undecided prompt simply returns next time.
@@ -1580,6 +1609,12 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         String label = adapter.labelAt(position);
         int color = adapter.ambientColorAt(position);
         float y = dockTopInRoot - 14 * density - 26 * density - hero.getHeight();
+        if (nowPlaying != null) nowPlaying.showShelf(dockTopInRoot - 34 * density);
+        if (spotlight != null) {
+            spotlight.show(adapter.packageAt(position), label, adapter.artworkAt(position), lastOpenedLine(position),
+                    dockTopInRoot - 34 * density);
+        }
+        if (weather != null) weather.showShelf(dockTopInRoot - 34 * density);
         boolean changed = !label.contentEquals(heroName.getText());
         if (cinematic && heroArtAlpha > 0f) showHeroArt(position);
 
@@ -1721,18 +1756,25 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
 
     /** "Last opened yesterday, 9:40 PM", the time in white; nothing (but the same height) when it was never seen. */
     private void updateHeroMeta(int position) {
-        long when = LastOpened.get(this, adapter.packageAt(position));
-        if (when <= 0) {
+        CharSequence line = lastOpenedLine(position);
+        if (line == null) {
             heroMeta.setVisibility(View.INVISIBLE);
             return;
         }
+        heroMeta.setText(line);
+        heroMeta.setVisibility(View.VISIBLE);
+    }
+
+    /** "Last opened yesterday, 9:40 PM" with the time in white, or null when the app was never opened from Home. */
+    private CharSequence lastOpenedLine(int position) {
+        long when = LastOpened.get(this, adapter.packageAt(position));
+        if (when <= 0) return null;
         String rel = LastOpened.describe(this, when);
         String text = getString(R.string.last_opened, rel);
         SpannableString line = new SpannableString(text);
         int at = text.indexOf(rel);
         if (at >= 0) line.setSpan(new ForegroundColorSpan(0xFFFFFFFF), at, at + rel.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        heroMeta.setText(line);
-        heroMeta.setVisibility(View.VISIBLE);
+        return line;
     }
 
     /** One dot per dock app, the focused one drawn long and white. Hebrew docks start on the right, so do the dots. */
@@ -1847,6 +1889,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
      * name above the dock does not show (every grid tile has its name underneath).
      */
     private void showGlowOnly(int position) {
+        if (nowPlaying != null) nowPlaying.hideShelf();
+        if (spotlight != null) spotlight.hideShelf();
+        if (weather != null) weather.hideShelf();
         int color = adapter.ambientColorAt(position);
         stopAmbientAnimation();
         hero.animate().cancel();
@@ -1873,6 +1918,9 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     }
 
     private void hideHero() {
+        if (nowPlaying != null) nowPlaying.hideShelf();
+        if (spotlight != null) spotlight.hideShelf();
+        if (weather != null) weather.hideShelf();
         if (!heroShown) return;
         stopAmbientAnimation();
         hero.animate().cancel();
@@ -2107,7 +2155,14 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
                     rtlAppGrid, keyCode == KeyEvent.KEYCODE_DPAD_LEFT);
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_UP) {
-            if (position < COLUMNS) return false;          // dock row: let focus move to the top bar
+            if (position < COLUMNS) {
+                // The now playing card sits right above the dock: Up goes onto its buttons.
+                if (nowPlaying != null && nowPlaying.focusControls()) {
+                    grid.playSoundEffect(SoundEffectConstants.NAVIGATION_UP);
+                    return true;
+                }
+                return false;                               // dock row: let focus move to the top bar
+            }
             target = position - COLUMNS;
         } else {
             int lastRowStart = ((count - 1) / COLUMNS) * COLUMNS;

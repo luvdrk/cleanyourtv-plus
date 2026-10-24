@@ -206,6 +206,19 @@ final class Config {
     final boolean handleViewInputs;
     /** Hold OK on a tile opens a menu (Move, Remove from Home, App info) instead of App info (config.xml / theme tile_menu). */
     final boolean tileMenu;
+    /** The now playing card in the shelf above the dock (config.xml / theme now_playing); see NowPlaying. Set by load. */
+    boolean nowPlaying;
+    /** With always_show_names, only the focused tile's name shows; the dock keeps room for it (theme focused_name_only). Set by load. */
+    boolean focusedNameOnly;
+    /** fade_rows: how tall the fade under the clock is, in dp (theme fade_rows_length, 24 to 400; 48 as before). Set by load. */
+    int fadeRowsLength = 48;
+    /** How tall the fade at the screen's bottom edge is, in dp, over the rows under the dock (theme fade_rows_bottom, 0 off). Set by load. */
+    int fadeRowsBottom;
+    /** The app spotlight in the shelf above the dock (theme app_spotlight); see Spotlight. Set by load. */
+    boolean appSpotlight;
+    /** The weather card's place (theme weather_latitude, weather_longitude, weather_city); NaN keeps it off. Set by load. */
+    double weatherLatitude = Double.NaN, weatherLongitude = Double.NaN;
+    String weatherCity = "";
 
     private Config(List<String> dockApps, boolean fillDock, List<String> hiddenApps, List<String> libraryApps, String liveTvPackage,
                    String liveTvAction, String liveTvInputId, Map<String, String> launchActions, Map<String, String> appLabels,
@@ -387,6 +400,13 @@ final class Config {
         int cinematicScrim = res.getInteger(R.integer.cinematic_scrim);
         Map<String, Set<String>> wallpaperMoods = moods(res.getString(R.string.wallpaper_moods));
         String glowStyle = res.getString(R.string.glow_style);
+        boolean nowPlaying = res.getBoolean(R.bool.now_playing);
+        boolean focusedNameOnly = false;
+        int fadeRowsLength = 48;
+        int fadeRowsBottom = 0;
+        boolean appSpotlight = false;
+        double weatherLatitude = Double.NaN, weatherLongitude = Double.NaN;
+        String weatherCity = "";
         boolean applied = false;
 
         File dir = dir(ctx);
@@ -467,6 +487,14 @@ final class Config {
             JSONObject moods = json.optJSONObject("wallpaper_moods");
             if (moods != null) wallpaperMoods = moods(moods);
             glowStyle = string(json, "glow_style", glowStyle);
+            nowPlaying = bool(json, "now_playing", nowPlaying);
+            focusedNameOnly = bool(json, "focused_name_only", focusedNameOnly);
+            fadeRowsLength = integer(json, "fade_rows_length", fadeRowsLength, 24, 400);
+            fadeRowsBottom = integer(json, "fade_rows_bottom", fadeRowsBottom, 0, 300);
+            appSpotlight = bool(json, "app_spotlight", appSpotlight);
+            weatherLatitude = json.optDouble("weather_latitude", Double.NaN);
+            weatherLongitude = json.optDouble("weather_longitude", Double.NaN);
+            weatherCity = string(json, "weather_city", weatherCity).trim();
         }
         // A theme push or reset invalidates choices made on the TV. On first use, remember the
         // current theme without clearing choices from an older launcher version.
@@ -512,7 +540,7 @@ final class Config {
         Festival festival = json == null ? Festival.NONE : Festival.parse(string(json, "festival", ""),
                 string(json, "festival_until", ""), string(json, "greeting", ""), string(json, "accent_color", ""));
 
-        return new Config(dock, fillDock, hidden, libraryApps, liveTv, liveTvAction, liveTvInputId, packageMap(launchActions), packageMap(appLabels),
+        Config config = new Config(dock, fillDock, hidden, libraryApps, liveTv, liveTvAction, liveTvInputId, packageMap(launchActions), packageMap(appLabels),
                 packageMap(appBanners), panelService,
                 panelAction, panelExtra, coocaaSources, inputAction, inputUriScheme,
                 Math.max(1, columns), Math.max(0, rowsBelow), animations, advancedEffects,
@@ -521,6 +549,15 @@ final class Config {
                 wallpapers, rotationMinutes, wallpaperDim, dockOpacity, wallpaperOrder, applied,
                 festival, inputKeycodes, appKeys, stockHomeRedirect, json == null ? Collections.emptyList() : raceCalendar(json), cinematic, ambientGlow, appGlow, fadeRows,
                 Math.max(0, idleClockMinutes), keyFilter, dockGlass, glowStyle, wallpaperCaptions, handleViewInputs, tileMenu, dockEvenPadding, cinematicDots, cinematicWhiteFocus, wifiStatusColor, cinematicScrim, cinematicArt, wallpaperMoods, gamepadPassthrough);
+        config.nowPlaying = nowPlaying;
+        config.focusedNameOnly = focusedNameOnly;
+        config.fadeRowsLength = fadeRowsLength;
+        config.fadeRowsBottom = fadeRowsBottom;
+        config.appSpotlight = appSpotlight;
+        config.weatherLatitude = weatherLatitude;
+        config.weatherLongitude = weatherLongitude;
+        config.weatherCity = weatherCity;
+        return config;
     }
 
     /**

@@ -1,3 +1,56 @@
+# CleanYourTV Plus
+
+**A fork of [CleanYourTV](https://github.com/Gathin23/cleanyourtv) that turns the clean Android TV home screen into
+a living one: a Spotify now playing card you can control from the remote, a weather card, softer fades and a
+calmer dock.** Built and tested on an Xtreme 4K TV (Skyworth, Android TV 10), every feature is a theme switch, so
+the original launcher looks exactly as before until you turn one on.
+
+<p align="center">
+  <img src="docs/plus/now-playing.jpg" width="49%" alt="The now playing card: Ivy by Frank Ocean, cover art, progress bar with 0:56 and -3:12, previous, pause and next buttons and Open in Spotify, above the dock">
+  <img src="docs/plus/weather.jpg" width="49%" alt="The weather card: a cloud icon, London, 9 degrees, Cloudy, feels like 6, high 16, low 8, rain likely around 12 PM, above the dock">
+</p>
+<p align="center">
+  <img src="docs/plus/fade-rows.jpg" width="32%" alt="Scrolled into the app grid: the rows dissolve softly as they rise toward the clock">
+  <img src="docs/plus/focused-name.jpg" width="32%" alt="The dock with only the focused app, YouTube, showing its name">
+  <img src="docs/plus/spotlight.jpg" width="32%" alt="The app spotlight: the Netflix banner large with its name above the dock">
+</p>
+
+### What Plus adds
+
+| Feature | What it does | Switch |
+|---|---|---|
+| **Now playing card** | Cover, title, artist and album, a smooth progress bar with the time left, previous / play-pause / next and *Open in Spotify*, shown above the dock whichever app is focused. Up from the dock reaches the buttons. Works with any music app that publishes a media session. | `now_playing` |
+| **Survives HDMI** | Switching to an HDMI input and back keeps the song on the card, shown as paused with the time held; the buttons still resume and skip it. (The TV's Live TV app grabs the media session on every input switch, and Spotify keeps reporting "playing" while silent; the card works around both.) | built in |
+| **Weather card** | Temperature in °C, sky, feels-like, the day's high and low and when rain is due, from [Open-Meteo](https://open-meteo.com) (free, no account), every 30 minutes, kept for offline. It shares the shelf with the now playing card. | `weather_latitude`, `weather_longitude`, `weather_city` |
+| **Softer fades** | A longer fade as rows rise under the clock, and a soft fade into the wallpaper for the rows under the dock. | `fade_rows_length`, `fade_rows_bottom` |
+| **Calmer dock** | Only the focused app shows its name, dock included. | `focused_name_only` |
+| **App spotlight** | The focused app's banner large with its name and when it was last opened. | `app_spotlight` |
+
+Every switch is documented in [`themes/README.md`](themes/README.md#keys), with a screenshot in
+[`docs/switches.md`](docs/switches.md).
+
+### Put it on a TV
+
+Follow the original setup below to enable network debugging and prepare `tools\venv`, then run one command. It builds
+the launcher, installs it as Home with its remote-button helper, grants the now playing card's notification access
+and pushes the sample theme ([`plus/sample-theme`](plus/sample-theme/config.json), weather for London: change the
+three `weather_` lines to your city):
+
+```powershell
+plus\setup-tv.ps1 -TvHost 192.168.1.50
+```
+
+Use your own theme folder with `-Theme`, and put the TV's own home screen back any time with
+`plus\restore-original-ui.ps1 -TvHost 192.168.1.50`. Apps a debloat list turned off come back with the original's
+restore step.
+
+### Credit
+
+CleanYourTV is by [Gathin23](https://github.com/Gathin23/cleanyourtv) and its contributors, under the MIT license;
+this fork keeps both. Everything below this line is the original README.
+
+---
+
 <p align="center">
   <a href="https://cleanyour.tv"><img src="https://raw.githubusercontent.com/Gathin23/cleanyourtv/main/docs/banner.png" alt="CleanYourTV. Your TV, minus the ads. Strip the bloatware from any Android TV or Google TV over Wi-Fi and replace the ad-filled home screen with a clean launcher that looks like an Apple TV. No root, no cable, nothing uninstalled, and a one-line restore." width="800"></a>
 </p>

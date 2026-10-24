@@ -146,6 +146,315 @@
             android:visibility="gone" />
     </LinearLayout>
 
+    <!-- App spotlight (app_spotlight, see Spotlight): in the shelf above the dock while no music plays, the focused
+         dock app's banner, name and when it was last opened. Placed over the dock in code (MainActivity.showHero). -->
+    <LinearLayout
+        android:id="@+id/appSpotlight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginStart="68dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/spotlightArt"
+            android:layout_width="256dp"
+            android:layout_height="144dp"
+            android:scaleType="centerCrop"
+            android:elevation="6dp"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/spotlightName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxWidth="440dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="#FFFFFFFF"
+                android:textSize="34sp"
+                android:fontFamily="@string/font_regular"
+                android:letterSpacing="-0.01"
+                android:includeFontPadding="false"
+                android:shadowColor="#99000000"
+                android:shadowRadius="8" />
+
+            <TextView
+                android:id="@+id/spotlightMeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:singleLine="true"
+                android:textColor="#B3FFFFFF"
+                android:textSize="15sp"
+                android:fontFamily="@string/font_regular"
+                android:shadowColor="#99000000"
+                android:shadowRadius="6" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Weather card (weather_latitude/longitude, see Weather): in the shelf above the dock while no music plays.
+         Placed over the dock in code (MainActivity.showHero). -->
+    <LinearLayout
+        android:id="@+id/weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginStart="68dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/weatherIcon"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="fitCenter"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="26dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/weatherKicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="#CCFFFFFF"
+                android:textSize="12sp"
+                android:fontFamily="@string/font_medium"
+                android:letterSpacing="0.16"
+                android:textAllCaps="true"
+                android:shadowColor="#99000000"
+                android:shadowRadius="6" />
+
+            <TextView
+                android:id="@+id/weatherTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:textColor="#FFFFFFFF"
+                android:textSize="64sp"
+                android:fontFamily="@string/font_light"
+                android:letterSpacing="-0.03"
+                android:includeFontPadding="false"
+                android:shadowColor="#99000000"
+                android:shadowRadius="8" />
+
+            <TextView
+                android:id="@+id/weatherCondition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:textColor="#FFFFFFFF"
+                android:textSize="18sp"
+                android:fontFamily="@string/font_regular"
+                android:shadowColor="#99000000"
+                android:shadowRadius="6" />
+
+            <TextView
+                android:id="@+id/weatherDetails"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:singleLine="true"
+                android:textColor="#B3FFFFFF"
+                android:textSize="15sp"
+                android:fontFamily="@string/font_regular"
+                android:shadowColor="#99000000"
+                android:shadowRadius="6" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Now playing card (now_playing, see NowPlaying): in the shelf above the dock, in place of the focused app's
+         name, while a music app plays or is paused. Placed over the dock in code (MainActivity.showHero). -->
+    <LinearLayout
+        android:id="@+id/nowPlaying"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|left"
+        android:layout_marginStart="68dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:focusable="false"
+        android:importantForAccessibility="no"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/nowPlayingArt"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            android:elevation="6dp"
+            android:importantForAccessibility="no" />
+
+        <LinearLayout
+            android:layout_width="460dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:orientation="vertical">
+
+            <!-- The app's icon and "SPOTIFY · NOW PLAYING". -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/nowPlayingIcon"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="fitCenter"
+                    android:importantForAccessibility="no" />
+
+                <TextView
+                    android:id="@+id/nowPlayingKicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="@string/font_medium"
+                    android:letterSpacing="0.16"
+                    android:textAllCaps="true"
+                    android:shadowColor="#99000000"
+                    android:shadowRadius="6" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/nowPlayingTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="#FFFFFFFF"
+                android:textSize="32sp"
+                android:fontFamily="@string/font_regular"
+                android:letterSpacing="-0.01"
+                android:includeFontPadding="false"
+                android:shadowColor="#99000000"
+                android:shadowRadius="8" />
+
+            <TextView
+                android:id="@+id/nowPlayingArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="#E6FFFFFF"
+                android:textSize="16sp"
+                android:fontFamily="@string/font_regular"
+                android:shadowColor="#99000000"
+                android:shadowRadius="6" />
+
+            <!-- How far into the song and the time left; gone when the app sends no duration. -->
+            <LinearLayout
+                android:id="@+id/nowPlayingProgressRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/nowPlayingProgress"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:max="10000"
+                    android:progressDrawable="@drawable/np_progress"
+                    android:focusable="false" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp">
+
+                    <TextView
+                        android:id="@+id/nowPlayingElapsed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:singleLine="true"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="13sp"
+                        android:fontFamily="@string/font_medium"
+                        android:fontFeatureSettings="tnum" />
+
+                    <TextView
+                        android:id="@+id/nowPlayingLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:singleLine="true"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="13sp"
+                        android:fontFamily="@string/font_medium"
+                        android:fontFeatureSettings="tnum" />
+                </FrameLayout>
+            </LinearLayout>
+
+            <!-- Previous, play/pause, next and Open in Spotify: Up from the dock lands on play/pause, Down goes back. -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/nowPlayingPrev"
+                    style="@style/NowPlayingButton"
+                    android:contentDescription="@string/now_playing_previous"
+                    android:src="@drawable/ic_np_prev" />
+
+                <ImageView
+                    android:id="@+id/nowPlayingToggle"
+                    style="@style/NowPlayingButton"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:contentDescription="@string/now_playing_toggle"
+                    android:src="@drawable/ic_np_pause" />
+
+                <ImageView
+                    android:id="@+id/nowPlayingNext"
+                    style="@style/NowPlayingButton"
+                    android:contentDescription="@string/now_playing_next"
+                    android:src="@drawable/ic_np_next" />
+
+                <TextView
+                    android:id="@+id/nowPlayingOpen"
+                    style="@style/TopButton"
+                    android:layout_height="38dp"
+                    android:layout_marginStart="14dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

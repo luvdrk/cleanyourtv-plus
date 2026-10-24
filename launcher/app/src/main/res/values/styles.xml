@@ -35,6 +35,18 @@
         <item name="android:drawablePadding">0dp</item>
     </style>
 
+    <!-- The now playing card's previous, play/pause and next buttons: 38dp discs, white when focused (NowPlaying). -->
+    <style name="NowPlayingButton">
+        <item name="android:layout_width">38dp</item>
+        <item name="android:layout_height">38dp</item>
+        <item name="android:padding">9dp</item>
+        <item name="android:background">@drawable/np_button_bg</item>
+        <item name="android:tint">@color/np_button_tint</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
     <style name="SettingsRow">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">52dp</item>

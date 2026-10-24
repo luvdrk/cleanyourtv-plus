@@ -348,6 +348,11 @@
     <!-- The focus highlight glows in the focused app's colour on every tile, as the cinematic shelf does for the
          dock, without cinematic_home. Can also be set with "app_glow": true in a theme's config.json. -->
     <bool name="app_glow">false</bool>
+    <!-- A now playing card right of the shelf's name while a music app (Spotify) plays or is paused: artwork, title
+         and artist from its media session (NowPlaying). Needs notification access, granted over adb with
+         cmd notification allow_listener com.gathin.tvhome/com.gathin.tvhome.NowPlayingListener. Can also be set
+         with "now_playing": true in a theme's config.json. -->
+    <bool name="now_playing">false</bool>
     <!-- The rows fade out as they scroll up under the clock, instead of being cut off at a hard line (TopFade).
          The grid then draws into a hardware layer, about 6 MB of graphics memory at 1080p, so it is off by default.
          Can also be set with "fade_rows": true in a theme's config.json. -->
