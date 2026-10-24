@@ -1,5 +1,7 @@
 # CleanYourTV Plus
 
+[![CI](https://github.com/luvdrk/cleanyourtv-plus/actions/workflows/ci.yml/badge.svg)](https://github.com/luvdrk/cleanyourtv-plus/actions/workflows/ci.yml)
+
 **A fork of [CleanYourTV](https://github.com/Gathin23/cleanyourtv) that turns the clean Android TV home screen into
 a living one: a Spotify now playing card you can control from the remote, a weather card, softer fades and a
 calmer dock.** Built and tested on an Xtreme 4K TV (Skyworth, Android TV 10), every feature is a theme switch, so
